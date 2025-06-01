@@ -1,52 +1,95 @@
-# EX 1D Linear search
+# EX 2A BACKTRACKING - RAT IN MAZE PROBLEM
 ## DATE:
 ## AIM:
-To write a python program for a search function with parameter list name and the value to be searched using string values.
+To implement the Rat in a Maze problem using backtracking and find all possible paths from the start to the destination in a given maze.
+
 
 ## Algorithm
-1.Input the number of elements: Ask the user to enter how many numbers they want to store in a tuple. Store this value in variable n.
+1.Initialize a solution matrix sol[N][N] with all zeros.
 
-2.Initialize an empty tuple: Create an empty tuple named Tuple.
+2.Start from cell (0, 0) — check if it is safe to enter:
 
-3.Read n integer inputs: Use a loop that runs n times to take integer input from the user. Each input value is added to the tuple using tuple concatenation (Tuple += (value,)).
+3.Use isSafe(maze, x, y) to check if the cell is inside the grid and its value is 1.
 
-4.Input the search key: Ask the user to enter the number they want to search for. Store it in a variable x.
+4.Define recursive function solveMazeUtil(x, y, sol):
 
-5.Define the search function: Create a function called search that takes two arguments:
- tup: the tuple of elements
- key: the value to be searched
+5.If x == N-1 and y == N-1, i.e., destination is reached:
 
-6.Search through the tuple: Inside the function, use a loop to go through each element i in the tuple.
+6.Mark sol[x][y] = 1 and return True.
 
-7.If the key is found: If any element in the tuple matches the key, print "key Found" and stop the loop using break.
+7.Mark current cell in solution path: sol[x][y] = 1.
 
-8.If the loop completes without finding the key: If the loop ends normally (no match found), print "key Not Found" using the else clause of the loop.
+8.Try moving in two directions:
+
+9.First, try moving down (x+1, y). If this leads to a solution, return True.
+
+10.If not, try moving right (x, y+1). If this leads to a solution, return True.
+
+11.Backtrack: Unmark this cell in the solution (sol[x][y] = 0) and return False.
+
+12.If no path is found starting from (0, 0), print "Solution doesn't exist".
+
+13.If a path is found, print the solution matrix, where 1 marks the path from start to goal. 
 
 ## Program:
 ```
 # Developed by: Aparna RB
 # Register Number: 212222220005
 
-def search(tup,key):
-    for i in tup:
-        if i==key:
-            print(i,"Found")
-            break;
-    else:
-        print(key,"Not Found")
+N = 4
+def printSolution( sol ):
+    for i in sol:
+        for j in i:
+            print(str(j) + " ", end ="")
+        print("")
         
-n=int(input()) 
-Tuple=()
-
-for i in range(n):
-    Tuple+=(int(input()),)
+def isSafe( maze, x, y ):
+     
+    if x >= 0 and x < N and y >= 0 and y < N and maze[x][y] == 1:
+        return True
+     
+    return False
     
-x=int(input())    
-search(Tuple,x)
-```
+def solveMaze( maze ):
+    sol = [ [ 0 for j in range(4) ] for i in range(4) ]
+     
+    if solveMazeUtil(maze, 0, 0, sol) == False:
+        print("Solution doesn't exist");
+        return False
+     
+    printSolution(sol)
+    return True
+     
+# A recursive utility function to solve Maze problem
+def solveMazeUtil(maze, x, y, sol):
+    if not isSafe(maze,x,y):
+        return False
+        
+    # if (x, y is goal) return True
+    if x == N - 1 and y == N - 1:
+        sol[x][y] = 1
+        return True
+    sol[x][y]=1    
+     
+    if solveMazeUtil(maze, x+1, y, sol):
+        return True
+    
+    if solveMazeUtil(maze, x, y+1, sol):
+        return True
+    
+    sol[x][y]=0
+    return False
 
+if __name__ == "__main__":
+    maze = [ [1, 0, 0, 0],
+             [1, 1, 0, 1],
+             [0, 1, 0, 0],
+             [1, 1, 1, 1] ]
+              
+    solveMaze(maze)
+```
 ## Output:
-![image](https://github.com/user-attachments/assets/4eea0123-8f54-484b-8614-b9c8c46942ba)
+![438777388-ec71b7fe-ca2c-42b9-8aa5-8efcd9705ba0](https://github.com/user-attachments/assets/a4db67c7-668b-48e3-b547-93c947b56ae7)
 
 ## Result:
-The program was executed successfully, and it correctly checks if the input element is present in the list, printing "Found" if the element exists or "Not Found" if it does not.
+The Rat in a Maze program executed successfully, and a valid path from the start to the destination was found and display.
